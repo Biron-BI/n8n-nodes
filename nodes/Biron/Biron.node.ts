@@ -114,7 +114,7 @@ export class Biron implements INodeType {
     // Check for the specific resource and operation (as the node only supports one currently)
     if (resource === 'nexusQL' && operation === 'queryNexusQL') {
       const baseURL = "https://nexus.biron-analytics.com";
-      const url = `/workspace/${workspace}/query/sql/n8n`;
+      const url = `/workspace/${workspace}/query/sql/n8n`; // TODO uuid
 
       const options: IHttpRequestOptions = {
         baseURL,
