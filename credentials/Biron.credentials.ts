@@ -28,7 +28,7 @@ export class Biron implements ICredentialType {
       type: 'string',
       required: true,
       typeOptions: {
-        // password: true, // Hides the input fixme
+        password: true, // Hides the input
       },
       default: '',
     },

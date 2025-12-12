@@ -4,7 +4,6 @@ import {
   type INodeTypeDescription,
   IExecuteSingleFunctions,
   IHttpRequestOptions,
-  INodeExecutionData, IExecuteFunctions, IDataObject,
 } from 'n8n-workflow';
 
 export async function debugRequest(
@@ -17,53 +16,6 @@ export async function debugRequest(
 }
 
 export class Biron implements INodeType {
-  // Required because body cannot be a raw string with declarative n8n
-//   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-//
-//     // Handle data coming from previous nodes
-//     const items = this.getInputData();
-//     let responseData;
-//     const returnData = [];
-//     const resource = this.getNodeParameter('resource', 0) as string;
-//     const operation = this.getNodeParameter('operation', 0) as string;
-//
-// // For each item, make an API call to create a contact
-//     for (let i = 0; i < items.length; i++) {
-//       if (resource === 'contact') {
-//         if (operation === 'create') {
-//           // Get email input
-//           const email = this.getNodeParameter('email', i) as string;
-//           // Get additional fields input
-//           const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
-//           const data: IDataObject = {
-//             email,
-//           };
-//
-//           Object.assign(data, additionalFields);
-//
-//           // Make HTTP request according to https://sendgrid.com/docs/api-reference/
-//           const options = {
-//             headers: {
-//               'Accept': 'application/json',
-//             },
-//             method: 'PUT',
-//             body: {
-//               contacts: [
-//                 data,
-//               ],
-//             },
-//             uri: `https://api.sendgrid.com/v3/marketing/contacts`,
-//           };
-//           responseData = await this.helpers.requestWithAuthentication.call(this, 'friendGridApi', options);
-//           returnData.push(responseData);
-//         }
-//       }
-//     }
-// // Map data to n8n data structure
-//     return [this.helpers.returnJsonArray(returnData)];
-//
-//   }
-
   description: INodeTypeDescription = {
     displayName: 'Biron',
     name: 'biron',
@@ -123,21 +75,55 @@ export class Biron implements INodeType {
                 preSend: [debugRequest],
                 type: "body",
                 property: '',
-                value: `SELECT dimension('logs_44') AS d0, metric('44.41') AS m0 FROM datamodel WHERE refDate BETWEEN '2025-12-05' AND '2025-12-11' GROUP BY d0 ORDER BY m0 DESC`
+                value: '={{ $parameter.nexusQLRequest }}',
               },
               request: {
                 baseURL: "https://nexus.biron-analytics.com",
                 method: 'POST',
                 headers: {
                   "Content-Type": 'text/plain',
-                  'Accept': "text/csv",
+                  'Accept': "application/jsonl",
                 },
-                url: '/workspace/bironreporting_prod/query/sql/n8n', // TODO uuid
+                url: '={{ "/workspace/" + $parameter.workspace + "/query/sql/n8n" }}',
               },
             },
           },
         ],
         default: 'queryNexusQL',
+      },
+      {
+        displayName: 'Workspace',
+        name: 'workspace',
+        type: 'string',
+        default: "",
+        placeholder: 'birondemo_prod',
+        description: 'The Biron workspace to query against',
+        required: true,
+        displayOptions: {
+          show: {
+            resource: ['nexusQL'],
+            operation: ['queryNexusQL'],
+          },
+        },
+      },
+      {
+        displayName: 'NexusQL Request',
+        name: 'nexusQLRequest',
+        type: 'string',
+        default: "",
+        // placeholder: "SELECT metric('viewCode.metricCode') as m0 FROM datamodel WHERE refDate BETWEEN '2025-12-01' AND '2025-12-11'",
+        description: 'The NexusQL (SQL-like) query to execute',
+        required: true,
+        typeOptions: {
+          // editor: "sqlEditor", // TODO custom editor ?
+          rows: 10,
+        },
+        displayOptions: {
+          show: {
+            resource: ['nexusQL'],
+            operation: ['queryNexusQL'],
+          },
+        },
       },
     ],
   };
