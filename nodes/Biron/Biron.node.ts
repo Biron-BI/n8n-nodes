@@ -2,18 +2,9 @@ import {
   NodeConnectionTypes,
   type INodeType,
   type INodeTypeDescription,
-  IExecuteSingleFunctions,
-  IHttpRequestOptions,
+  INodeExecutionData, IHttpRequestOptions, IAllExecuteFunctions,
 } from 'n8n-workflow';
 
-export async function debugRequest(
-  this: IExecuteSingleFunctions,
-  requestOptions: IHttpRequestOptions,
-): Promise<IHttpRequestOptions> {
-  console.log("body =", requestOptions.body)
-  console.log(`[${this.getNode().type} | ${this.getNode().name}] -`, requestOptions);
-  return requestOptions;
-}
 
 export class Biron implements INodeType {
   description: INodeTypeDescription = {
@@ -37,7 +28,7 @@ export class Biron implements INodeType {
         required: true,
       },
     ],
-    requestDefaults: {},
+    // The properties array remains the same
     properties: [
       {
         displayName: 'Resource',
@@ -70,23 +61,6 @@ export class Biron implements INodeType {
             value: 'queryNexusQL',
             action: 'Execute NexusQL',
             description: 'Extract qualified Data from Biron using NexusQL',
-            routing: {
-              send: {
-                preSend: [debugRequest],
-                type: "body",
-                property: '',
-                value: '={{ $parameter.nexusQLRequest }}',
-              },
-              request: {
-                baseURL: "https://nexus.biron-analytics.com",
-                method: 'POST',
-                headers: {
-                  "Content-Type": 'text/plain',
-                  'Accept': "application/jsonl",
-                },
-                url: '={{ "/workspace/" + $parameter.workspace + "/query/sql/n8n" }}',
-              },
-            },
           },
         ],
         default: 'queryNexusQL',
@@ -111,7 +85,7 @@ export class Biron implements INodeType {
         name: 'nexusQLRequest',
         type: 'string',
         default: "",
-        // placeholder: "SELECT metric('viewCode.metricCode') as m0 FROM datamodel WHERE refDate BETWEEN '2025-12-01' AND '2025-12-11'",
+        placeholder: "SELECT metric('viewCode.metricCode') as m0 FROM datamodel WHERE refDate BETWEEN '2025-12-01' AND '2025-12-11'",
         description: 'The NexusQL (SQL-like) query to execute',
         required: true,
         typeOptions: {
@@ -127,4 +101,70 @@ export class Biron implements INodeType {
       },
     ],
   };
+
+  // The execute method is mandatory for programmatic nodes
+  async execute(this: IAllExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const resource = this.getNodeParameter('resource', 0) as string;
+    const operation = this.getNodeParameter('operation', 0) as string;
+    const workspace = this.getNodeParameter('workspace', 0) as string;
+    const nexusQLRequest = this.getNodeParameter('nexusQLRequest', 0) as string;
+
+    // Check for the specific resource and operation (as the node only supports one currently)
+    if (resource === 'nexusQL' && operation === 'queryNexusQL') {
+      const baseURL = "https://nexus.biron-analytics.com";
+      const url = `/workspace/${workspace}/query/sql/n8n`;
+
+      const options: IHttpRequestOptions = {
+        baseURL,
+        method: "POST",
+        url,
+        body: nexusQLRequest, // The body is the raw NexusQL request string
+        headers: {
+          "Content-Type": 'text/plain',
+          'Accept': "application/jsonl",
+        },
+        qs: {
+          withHeartbeat: true,
+          withEotSignal: true,
+          allowCancelSignal: true,
+        },
+      };
+
+      // Make the actual HTTP request using the credential (bironCredentials)
+      const response = await this.helpers.httpRequestWithAuthentication.call(
+        this,
+        "bironCredentials",
+        options,
+      );
+
+      return [extractRows(String(response))]
+    }
+
+    throw new Error("unhandled operation")
+  }
+}
+
+function extractRows(responseText: string): any[] {
+  const lines = responseText.split('\n')
+  let eotReached = false
+  const rows = []
+  // the first line is heartbeat
+  for (let lineNumber = 1; lineNumber < lines.length; lineNumber++) {
+    const line = lines[lineNumber]
+    if (line === "\x04") { // the EOT signal
+      eotReached = true
+    } else if (line === "\x18") { // the CAN(cel) signal
+      const error = lines.slice(lineNumber + 1).join('\n')
+      throw new Error(`Query fails:
+${error}CAN signal received:
+${error}`)
+    } else {
+      rows.push({json: JSON.parse(line)})
+    }
+  }
+  if (!eotReached) {
+    throw new Error(`Backend communication link failure
+EOT signal not received`)
+  }
+  return rows
 }
