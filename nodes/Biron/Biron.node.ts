@@ -38,6 +38,7 @@ export class Biron implements INodeType {
         options: [
           {
             name: 'NexusQL',
+            displayName: "NexusQL",
             value: 'nexusQL',
           },
         ],
@@ -59,6 +60,7 @@ export class Biron implements INodeType {
           {
             name: 'Query NexusQL',
             value: 'queryNexusQL',
+            displayName: 'Query',
             action: 'Execute NexusQL',
             description: 'Extract qualified Data from Biron using NexusQL',
           },
