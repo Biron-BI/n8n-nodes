@@ -4,15 +4,6 @@
 	"codexVersion": "1.0",
 	"categories": ["Development", "Developer Tools"],
 	"resources": {
-		"credentialDocumentation": [
-			{
-				"url": "https://www.notion.so/birondata/Ecrire-sa-requ-te-NexusQL-b836797b1adf417bbb90ed53b2cbe051"
-			}
-		],
-		"primaryDocumentation": [
-			{
-				"url": "https://github.com/org/repo?tab=readme-ov-file"
-			}
-		]
+
 	}
 }
