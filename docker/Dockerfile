@@ -6,4 +6,6 @@ COPY dist/nodes /home/node/.n8n/custom/nodes/
 
 COPY dist/credentials /home/node/.n8n/custom/credentials/
 
+COPY dist/icons /home/node/.n8n/custom/icons/
+
 #fixme le system marche mal car .n8n est en volume partagé --> Pourquoi ?

@@ -4,8 +4,9 @@ import {
   type INodeTypeDescription,
   INodeExecutionData, IHttpRequestOptions, IAllExecuteFunctions,
 } from 'n8n-workflow';
+import crypto from "crypto";
 
-
+// noinspection JSUnusedGlobalSymbols
 export class Biron implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'Biron',
@@ -91,7 +92,7 @@ export class Biron implements INodeType {
         description: 'The NexusQL (SQL-like) query to execute',
         required: true,
         typeOptions: {
-          // editor: "sqlEditor", // TODO custom editor ?
+          // editor: "sqlEditor", // custom editor would be nice
           rows: 10,
         },
         displayOptions: {
@@ -114,7 +115,7 @@ export class Biron implements INodeType {
     // Check for the specific resource and operation (as the node only supports one currently)
     if (resource === 'nexusQL' && operation === 'queryNexusQL') {
       const baseURL = "https://nexus.biron-analytics.com";
-      const url = `/workspace/${workspace}/query/sql/n8n`; // TODO uuid
+      const url = `/workspace/${workspace}/query/sql/n8n-${crypto.randomUUID()}`;
 
       const options: IHttpRequestOptions = {
         baseURL,
