@@ -1,7 +1,6 @@
 import {IAllExecuteFunctions, IHttpRequestOptions} from "n8n-workflow"
 
 export async function runDatalakeQuery(exec: IAllExecuteFunctions, datalakeNode: string, clickhouseQuery: string) {
-
   const options: IHttpRequestOptions = {
     url: `https://kirbytes${datalakeNode}.biron-analytics.com:8443`,
     method: "POST",
@@ -22,7 +21,16 @@ export async function runDatalakeQuery(exec: IAllExecuteFunctions, datalakeNode:
     options,
   );
 
-  const responses = response.trim().split('\n')
+  let responses: string[] = []
+  if (typeof response === "string") {
+    // More than 1 row
+    responses = response.trim().split('\n')
+  } else if (typeof response === "object") {
+    // Only one row
+    responses = [JSON.stringify(response)]
+  } else {
+    throw new Error(`unhandled response type ${typeof response}`)
+  }
 
   const ret: any = []
   responses.forEach((elem: any) => ret.push({json: JSON.parse(elem)}))

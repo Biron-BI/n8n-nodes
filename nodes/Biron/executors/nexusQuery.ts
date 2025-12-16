@@ -18,6 +18,7 @@ export async function runNexusQuery(exec: IAllExecuteFunctions, workspace: strin
       withHeartbeat: true,
       withEotSignal: true,
       allowCancelSignal: true,
+      withNamesAndTypes: true,
     },
   };
 
@@ -31,11 +32,12 @@ export async function runNexusQuery(exec: IAllExecuteFunctions, workspace: strin
 }
 
 function extractRows(responseText: string): any[] {
-  const lines = responseText.split('\n')
+  const lines = responseText.trim().split('\n')
   let eotReached = false
+  let headers: string[] = [];
   const rows = []
   // the first line is heartbeat
-  for (let lineNumber = 1; lineNumber < lines.length; lineNumber++) { // TODO why 1 ?
+  for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
     const line = lines[lineNumber]
     if (line === "\x04") { // the EOT signal
       eotReached = true
@@ -45,7 +47,18 @@ function extractRows(responseText: string): any[] {
 ${error}CAN signal received:
 ${error}`)
     } else {
-      rows.push({json: JSON.parse(line)})
+      const parsedLine = JSON.parse(line)
+      if (lineNumber === 0) {
+        headers = parsedLine
+      } else if (lineNumber === 1) {
+        // Ignored: types
+      } else {
+        const obj: Record<string, any> = {};
+        for (let i = 0; i < headers.length; i++) {
+          obj[headers[i]] = parsedLine[i];
+        }
+        rows.push({json: obj});
+      }
     }
   }
   if (!eotReached) {
