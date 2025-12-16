@@ -1,4 +1,5 @@
+TAG=$(git describe --tags --abbrev=0)
 
-docker build -f docker/Dockerfile -t europe-docker.pkg.dev/artifact-registry-412407/docker-image/n8n:v0.0.2 .
+docker build -f docker/Dockerfile -t europe-docker.pkg.dev/artifact-registry-412407/docker-image/n8n:$TAG .
 
-docker push europe-docker.pkg.dev/artifact-registry-412407/docker-image/n8n:v0.0.2
+docker push europe-docker.pkg.dev/artifact-registry-412407/docker-image/n8n:$TAG
