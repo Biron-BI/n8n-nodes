@@ -7,13 +7,13 @@ export const resourcesNode: INodeProperties = {
   noDataExpression: true,
   options: [
     {
-      name: 'NexusQL (name)',
-      displayName: "NexusQL (display name)",
+      name: 'Nexus',
+      displayName: "Nexus",
       value: 'nexusQL',
     },
     {
-      name: 'Clickhouse Datalake (name)',
-      displayName: "Clickhouse Datalake (display name)",
+      name: 'Datalake',
+      displayName: "Datalake",
       value: 'datalake',
     },
   ],
@@ -33,11 +33,11 @@ export const nexusQLOperationNode: INodeProperties = {
   },
   options: [
     {
-      name: 'Query NexusQL',
+      name: 'Query Nexus',
       value: 'queryNexusQL',
-      displayName: 'Query',
-      action: 'Execute NexusQL',
-      description: 'Extract qualified Data from Biron using NexusQL',
+      displayName: 'Query Nexus',
+      action: 'Execute a NexusQL query',
+      description: 'Extract qualified data from Biron using NexusQL',
     },
   ],
   default: 'queryNexusQL',
@@ -56,11 +56,11 @@ export const datalakeOperationNode: INodeProperties = {
   },
   options: [
     {
-      name: 'Faire une requête Clickhouse (name)',
+      name: 'Query',
       value: 'datalakeQuery',
-      displayName: 'Faire une requête Clickhouse (display)',
-      action: 'Execute Clickhouse query',
-      description: 'Extract source or cleanup up data',
+      displayName: 'Execute Clickhouse query',
+      action: 'Execute a Clickhouse query',
+      description: 'Execute a Clickhouse query on your Biron-built datalake',
     },
   ],
   default: 'datalakeQuery',
@@ -71,7 +71,7 @@ export const nexusWorkspaceProperty: INodeProperties = {
   type: 'string',
   default: "",
   placeholder: 'birondemo_prod',
-  description: 'The Biron workspace to query against',
+  description: 'The Biron Nexus workspace to query against',
   required: true,
   displayOptions: {
     show: {
@@ -86,7 +86,7 @@ export const nexusQLProperty: INodeProperties = {
   type: 'string',
   default: "",
   placeholder: "SELECT metric('viewCode.metricCode') as m0 FROM datamodel WHERE refDate BETWEEN '2025-12-01' AND '2025-12-11'",
-  description: 'The NexusQL (SQL-like) query to execute',
+  description: 'The NexusQL (SQL-like) query to execute. https://birondata.notion.site/Ecrire-sa-requ-te-NexusQL-b836797b1adf417bbb90ed53b2cbe051',
   required: true,
   typeOptions: {
     // editor: "sqlEditor", // custom editor would be nice
@@ -105,7 +105,7 @@ export const datalakeNodeProperty: INodeProperties = {
   type: 'string',
   default: "1",
   placeholder: "1",
-  description: 'The node (provided by Biron on request)',
+  description: 'The Clickhouse node your data lives on (provided by Biron on request)',
   required: true,
   displayOptions: {
     show: {
@@ -115,15 +115,15 @@ export const datalakeNodeProperty: INodeProperties = {
   },
 }
 export const clickhouseSqlProperty: INodeProperties = {
-  displayName: 'Clickhouse query (display name)',
+  displayName: 'Clickhouse query',
   name: 'clickhouseQuery',
   type: 'string',
-  default: undefined,
+  default: "",
   placeholder: "SELECT max(billing_ht) FROM birondemo.b_transactions",
-  description: 'The query to execute',
+  description: 'The query to execute. https://clickhouse.com/docs/sql-reference/statements/select',
   required: true,
   typeOptions: {
-    editor: "sqlEditor", // custom editor would be nice
+    editor: "sqlEditor", // This breaks placeholder but is nice
     rows: 10,
   },
   displayOptions: {

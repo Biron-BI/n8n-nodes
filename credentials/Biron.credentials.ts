@@ -8,7 +8,7 @@ import type {
 export class Biron implements ICredentialType {
 	name = 'bironCredentials';
 
-	displayName = 'Biron Credentials';
+	displayName = 'Biron';
 
   icon: Icon = { light: 'file:../../icons/Biron_Light.svg', dark: 'file:../../icons/Biron_Dark.svg' };
 
@@ -37,9 +37,6 @@ export class Biron implements ICredentialType {
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
-      // headers: {
-      //   Authorization: '={{ "Basic " + $credentials?.user + ":" + $credentials?.password | base64Encode }}',
-      // },
       auth: {
         username: '={{$credentials.username}}',
         password: '={{$credentials.password}}',
@@ -47,10 +44,10 @@ export class Biron implements ICredentialType {
 		},
 	};
 
-	// test: ICredentialTestRequest = { // TODO
+	// test: ICredentialTestRequest = { // TODO -- need to create a route which accept any scope first
 	// 	request: {
 	// 		baseURL: 'https://iam.biron-analytics.com/backend',
-	// 		url: '/whoami',
+	// 		url: '/customer',
 	// 		method: 'GET',
 	// 	},
 	// };
