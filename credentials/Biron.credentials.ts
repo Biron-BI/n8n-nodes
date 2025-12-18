@@ -1,6 +1,6 @@
 import type {
   IAuthenticateGeneric,
-  Icon,
+  Icon, ICredentialTestRequest,
   ICredentialType,
   INodeProperties,
 } from 'n8n-workflow';
@@ -12,7 +12,7 @@ export class Biron implements ICredentialType {
 
   icon: Icon = { light: 'file:../../icons/Biron_Light.svg', dark: 'file:../../icons/Biron_Dark.svg' };
 
-	// documentationUrl = todo
+	documentationUrl = "https://github.com/Biron-BI/n8n-nodes/blob/master/README.md"
 
   properties: INodeProperties[] = [
     {
@@ -44,11 +44,11 @@ export class Biron implements ICredentialType {
 		},
 	};
 
-	// test: ICredentialTestRequest = { // TODO -- need to create a route which accept any scope first
-	// 	request: {
-	// 		baseURL: 'https://iam.biron-analytics.com/backend',
-	// 		url: '/customer',
-	// 		method: 'GET',
-	// 	},
-	// };
+	test: ICredentialTestRequest = {
+		request: {
+			baseURL: 'https://iam.biron-analytics.com/backend',
+			url: '/whoami',
+			method: 'GET',
+		},
+	};
 }
