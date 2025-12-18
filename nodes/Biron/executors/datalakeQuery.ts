@@ -17,7 +17,7 @@ export async function runDatalakeQuery(exec: IAllExecuteFunctions, datalakeNode:
   };
   const response = await exec.helpers.httpRequestWithAuthentication.call(
     exec,
-    "bironCredentials",
+    "bironCredentialsApi",
     options,
   );
 

@@ -24,7 +24,7 @@ export async function runNexusQuery(exec: IAllExecuteFunctions, workspace: strin
 
   const response = await exec.helpers.httpRequestWithAuthentication.call(
     exec,
-    "bironCredentials",
+    "bironCredentialsApi",
     options,
   );
 

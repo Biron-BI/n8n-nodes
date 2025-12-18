@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-biron",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Interact with the Biron platform in your n8n workflows",
   "license": "MIT",
   "homepage": "https://github.com/Biron-BI/n8n-nodes",
