@@ -1,7 +1,7 @@
-import {IAllExecuteFunctions, IHttpRequestOptions} from "n8n-workflow"
+import {IAllExecuteFunctions, IHttpRequestOptions, INodeExecutionData} from "n8n-workflow"
 import crypto from "crypto";
 
-export async function runNexusQuery(exec: IAllExecuteFunctions, workspace: string, nexusQuery: string) {
+export async function runNexusQuery(exec: IAllExecuteFunctions, workspace: string, nexusQuery: string): Promise<INodeExecutionData[][]> {
   const baseURL = "https://nexus.biron-analytics.com";
   const url = `/workspace/${workspace}/query/sql/n8n-${crypto.randomUUID()}`;
 
@@ -31,7 +31,7 @@ export async function runNexusQuery(exec: IAllExecuteFunctions, workspace: strin
   return [extractRows(String(response))]
 }
 
-function extractRows(responseText: string): any[] {
+function extractRows(responseText: string): INodeExecutionData[] {
   const lines = responseText.trim().split('\n')
   let eotReached = false
   let headers: string[] = [];
@@ -53,7 +53,7 @@ ${error}`)
       } else if (lineNumber === 1) {
         // Ignored: types
       } else {
-        const obj: Record<string, any> = {};
+        const obj: Record<string, object> = {};
         for (let i = 0; i < headers.length; i++) {
           obj[headers[i]] = parsedLine[i];
         }

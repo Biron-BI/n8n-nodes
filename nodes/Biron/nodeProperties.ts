@@ -36,7 +36,7 @@ export const nexusQLOperationNode: INodeProperties = {
       name: 'Query Nexus',
       value: 'queryNexusQL',
       displayName: 'Query Nexus',
-      action: 'Execute a NexusQL query',
+      action: 'Execute a nexusql query',
       description: 'Extract qualified data from Biron using NexusQL',
     },
   ],
@@ -59,7 +59,7 @@ export const datalakeOperationNode: INodeProperties = {
       name: 'Query',
       value: 'datalakeQuery',
       displayName: 'Execute Clickhouse query',
-      action: 'Execute a Clickhouse query',
+      action: 'Execute a clickhouse query',
       description: 'Execute a Clickhouse query on your Biron-built datalake',
     },
   ],
@@ -86,7 +86,7 @@ export const nexusQLProperty: INodeProperties = {
   type: 'string',
   default: "",
   placeholder: "SELECT metric('viewCode.metricCode') as m0 FROM datamodel WHERE refDate BETWEEN '2025-12-01' AND '2025-12-11'",
-  description: 'The NexusQL (SQL-like) query to execute. https://birondata.notion.site/Ecrire-sa-requ-te-NexusQL-b836797b1adf417bbb90ed53b2cbe051',
+  description: 'The NexusQL (SQL-like) query to execute. https://birondata.notion.site/Ecrire-sa-requ-te-NexusQL-b836797b1adf417bbb90ed53b2cbe051.',
   required: true,
   typeOptions: {
     // editor: "sqlEditor", // custom editor would be nice
@@ -100,7 +100,7 @@ export const nexusQLProperty: INodeProperties = {
   },
 }
 export const datalakeNodeProperty: INodeProperties = {
-  displayName: 'Clickhouse node',
+  displayName: 'Clickhouse Node',
   name: 'datalakeNode',
   type: 'string',
   default: "1",
@@ -115,12 +115,12 @@ export const datalakeNodeProperty: INodeProperties = {
   },
 }
 export const clickhouseSqlProperty: INodeProperties = {
-  displayName: 'Clickhouse query',
+  displayName: 'Clickhouse Query',
   name: 'clickhouseQuery',
   type: 'string',
   default: "",
   placeholder: "SELECT max(billing_ht) FROM birondemo.b_transactions",
-  description: 'The query to execute. https://clickhouse.com/docs/sql-reference/statements/select',
+  description: 'The query to execute. https://clickhouse.com/docs/sql-reference/statements/select.',
   required: true,
   typeOptions: {
     editor: "sqlEditor", // This breaks placeholder but is nice

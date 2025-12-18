@@ -5,12 +5,12 @@ import type {
   INodeProperties,
 } from 'n8n-workflow';
 
-export class Biron implements ICredentialType {
-	name = 'bironCredentials';
+export class BironApi implements ICredentialType {
+	name = 'bironCredentialsApi';
 
-	displayName = 'Biron';
+	displayName = 'Biron API';
 
-  icon: Icon = { light: 'file:../../icons/Biron_Light.svg', dark: 'file:../../icons/Biron_Dark.svg' };
+  icon: Icon = { light: 'file:../icons/Biron_Light.svg', dark: 'file:../icons/Biron_Dark.svg' };
 
 	documentationUrl = "https://github.com/Biron-BI/n8n-nodes/blob/master/README.md"
 

@@ -1,4 +1,11 @@
-import {IAllExecuteFunctions, INodeExecutionData, type INodeType, type INodeTypeDescription, NodeConnectionTypes} from 'n8n-workflow';
+import {
+  ApplicationError,
+  IAllExecuteFunctions,
+  INodeExecutionData,
+  type INodeType,
+  type INodeTypeDescription,
+  NodeConnectionTypes,
+} from 'n8n-workflow';
 import {runNexusQuery} from "./executors/nexusQuery"
 import {runDatalakeQuery} from "./executors/datalakeQuery"
 import {
@@ -28,7 +35,7 @@ export class Biron implements INodeType {
     outputs: [NodeConnectionTypes.Main],
     credentials: [
       {
-        name: 'bironCredentials',
+        name: 'bironCredentialsApi',
         displayName: "Biron Credentials",
         required: true,
       },
@@ -66,6 +73,6 @@ export class Biron implements INodeType {
       )
     }
 
-    throw new Error("unhandled operation")
+    throw new ApplicationError("unhandled operation", {level: "fatal"})
   }
 }

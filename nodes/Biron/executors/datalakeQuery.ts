@@ -1,6 +1,6 @@
-import {IAllExecuteFunctions, IHttpRequestOptions} from "n8n-workflow"
+import {IAllExecuteFunctions, IHttpRequestOptions, INodeExecutionData} from "n8n-workflow"
 
-export async function runDatalakeQuery(exec: IAllExecuteFunctions, datalakeNode: string, clickhouseQuery: string) {
+export async function runDatalakeQuery(exec: IAllExecuteFunctions, datalakeNode: string, clickhouseQuery: string): Promise<INodeExecutionData[][]> {
   const options: IHttpRequestOptions = {
     url: `https://kirbytes${datalakeNode}.biron-analytics.com:8443`,
     method: "POST",
@@ -32,7 +32,7 @@ export async function runDatalakeQuery(exec: IAllExecuteFunctions, datalakeNode:
     throw new Error(`unhandled response type ${typeof response}`)
   }
 
-  const ret: any = []
-  responses.forEach((elem: any) => ret.push({json: JSON.parse(elem)}))
+  const ret: INodeExecutionData[] = []
+  responses.forEach((elem) => ret.push({json: JSON.parse(elem)}))
   return [ret]
 }
